@@ -1,4 +1,4 @@
-FROM php:7.1-apache
+FROM php:7.2-apache
 MAINTAINER Corey Sewell "<corey@sewell.net.nz>"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
@@ -21,10 +21,14 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
         openssh-client \
         libmagickwand-dev \
         unzip \
-        zip && \
+        zip \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev && \
     curl -sS https://silverstripe.github.io/sspak/install | php -- /usr/local/bin && \
     curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && \
-    pecl install imagick-3.4.3 && \
+    pecl install imagick-3.4.4 && \
+    pecl install mcrypt-1.0.2 && \
     apt-get remove -y libmagickwand-dev && \
     apt-get install -y libmagickwand-6.q16-3 && \
     apt-get autoremove -y && \
@@ -36,13 +40,12 @@ RUN docker-php-ext-configure intl && \
     docker-php-ext-configure mysqli --with-mysqli=mysqlnd && \
     docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
-    docker-php-ext-enable imagick && \
+    docker-php-ext-enable imagick mcrypt && \
     docker-php-ext-install opcache && \
     docker-php-ext-install -j$(nproc) \
         intl \
         gd \
         ldap \
-        mcrypt \
         mysqli \
         pdo \
         pdo_mysql \

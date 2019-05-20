@@ -1,4 +1,4 @@
-FROM cjsewell/ss-dev
+FROM cjsewell/ss-dev:7.2
 MAINTAINER Corey Sewell "<corey@sewell.net.nz>"
 
 # Install components

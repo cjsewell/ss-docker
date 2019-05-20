@@ -1,4 +1,4 @@
-FROM cjsewell/ss-yarn
+FROM cjsewell/ss-yarn:7.2
 MAINTAINER Corey Sewell "<corey@sewell.net.nz>"
 
 # Install components
