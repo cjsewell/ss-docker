@@ -15,6 +15,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
         libmcrypt-dev \
         libtidy-dev \
         libxslt-dev \
+        libpng-dev \
         zlib1g-dev \
         libicu-dev \
         g++ \
@@ -23,8 +24,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
         unzip \
         zip \
         libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev && \
+        libjpeg62-turbo-dev && \
     curl -sS https://silverstripe.github.io/sspak/install | php -- /usr/local/bin && \
     curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && \
     pecl install imagick-3.4.4 && \
@@ -41,10 +41,10 @@ RUN docker-php-ext-configure intl && \
     docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-enable imagick mcrypt && \
+    docker-php-ext-install gd && \
     docker-php-ext-install opcache && \
     docker-php-ext-install -j$(nproc) \
         intl \
-        gd \
         ldap \
         mysqli \
         pdo \
