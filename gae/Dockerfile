@@ -12,3 +12,6 @@ RUN apt-get install -yq google-cloud-sdk && \
         apt-get autoremove -y && \
         apt-get clean -y && \
         rm -r /var/lib/apt/lists/*
+
+RUN pecl install stackdriver_debugger-alpha && \
+        docker-php-ext-enable stackdriver_debugger
