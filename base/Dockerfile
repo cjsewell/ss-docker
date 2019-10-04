@@ -39,9 +39,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 RUN docker-php-ext-configure intl && \
     docker-php-ext-configure mysqli --with-mysqli=mysqlnd && \
     docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-enable imagick mcrypt && \
-    docker-php-ext-install gd && \
     docker-php-ext-install opcache && \
     docker-php-ext-install -j$(nproc) \
         intl \
@@ -53,6 +51,10 @@ RUN docker-php-ext-configure intl && \
         tidy \
         xsl \
         zip
+
+
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && ddocker-php-ext-install gd  -j$(nproc) gd
 
 # Apache configuration
 RUN { \
