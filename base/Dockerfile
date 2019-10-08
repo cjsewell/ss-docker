@@ -30,7 +30,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     pecl install imagick-3.4.4 && \
     pecl install mcrypt-1.0.2 && \
     apt-get remove -y libmagickwand-dev && \
-    apt-get install -y libmagickwand-6.q16-3 && \
+    apt-get install -y libmagickwand-6.q16-6 && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -r /var/lib/apt/lists/*
@@ -52,9 +52,8 @@ RUN docker-php-ext-configure intl && \
         xsl \
         zip
 
-
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && ddocker-php-ext-install gd  -j$(nproc) gd
+    && docker-php-ext-install gd -j$(nproc) gd
 
 # Apache configuration
 RUN { \
