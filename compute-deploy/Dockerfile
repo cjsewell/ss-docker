@@ -1,20 +1,25 @@
-FROM cjsewell/ss-deployer:7.2
+FROM cjsewell/ss-yarn:latest
 MAINTAINER Corey Sewell "<corey@sewell.net.nz>"
 
-ENV SOPS_VERSION=3.3.0
+ENV SOPS_VERSION 3.7.1
 ENV SOPS_BINARY=/usr/bin/sops
-ENV CLOUD_SDK_VERSION=240.0.0
 
-RUN curl -sSL -o "${SOPS_BINARY}" "https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux"
-RUN chmod +x "${SOPS_BINARY}"
-RUN curl -sSL https://deb.nodesource.com/setup_10.x | bash -
-RUN curl -sSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-RUN curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list
-RUN apt-get -yq update && apt-get install -yq --no-install-recommends \
-        google-cloud-sdk \
-        yarn && \
-        apt-get autoremove -y && \
-        apt-get clean -y && \
-        rm -r /var/lib/apt/lists/*
+RUN set -ex \
+    && apt-get update -y \
+    && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
+        gnupg \
+        rsync \
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -r /var/lib/apt/lists/* \
+    && yarn global add envsub \
+    && yarn cache clean \
+
+RUN ARCH= && ARCH="$(dpkg --print-architecture)" \
+    && set -ex \
+    && curl -fsSLO https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops_${SOPS_VERSION}_${ARCH}.deb \
+    && dpkg -i sops_${SOPS_VERSION}_${ARCH}.deb \
+    && rm sops_${SOPS_VERSION}_${ARCH}.deb \
+    # smoke test
+    && sops --version
