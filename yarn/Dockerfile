@@ -1,12 +1,18 @@
-FROM cjsewell/ss-dev:7.2
+FROM cjsewell/ss-base:latest
 MAINTAINER Corey Sewell "<corey@sewell.net.nz>"
 
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+
 # Install components
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get -yq update
-RUN apt-get install -yq yarn && \
-        apt-get autoremove -y && \
-        apt-get clean -y && \
-        rm -r /var/lib/apt/lists/*
+RUN set -ex \
+    && curl -sSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+    && apt-get update -y \
+    && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
+        nodejs \
+        yarn \
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -r /var/lib/apt/lists/*
